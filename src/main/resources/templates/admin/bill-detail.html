@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel" th:text="'Chi tiết đơn hàng '+${billdetail.maDonHang}"></h5>
+
+            <a th:href="@{'/admin/bill-list'}">
+                <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </a>
+
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6>Địa chỉ nhận hàng: </h6>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8" th:text="${billdetail.diaChi}">94 Hoàng Công Chất, Phú diễn, bắc từ liêm, hà
+                        nội
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Màu sắc</th>
+                            <th scope="col">Kích cỡ</th>
+                            <th scope="col">Giá tiền</th>
+                            <th scope="col">Số lượng</th>
+                            <th scope="col">Tổng tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="items:${billDetailProduct}">
+                            <th scope="row" th:text="${items.tenSanPham}">Quần jee</th>
+                            <td th:text="${items.tenMau}">2.000.000</td>
+                            <td th:text="${items.kichCo}"> </td>
+                            <td th:text="${#numbers.formatDecimal(items.giaTien, 0, 'COMMA', 0, 'POINT')}+' VND'"></td>
+                            <td th:text="${items.soLuong}">@\2.000.000</td>
+                            <td th:text="${#numbers.formatDecimal(items.tongTien, 0, 'COMMA', 0, 'POINT')}+' VND'"></td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12 ml-auto">
+                        <h6>Voucher: </h6>
+                    </div>
+                    <div class="col-md-12 ml-auto">
+                        <span style="color: aqua;">Event Trung thu </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 ml-auto">
+                        <h6 style="color: red;" th:text="'Tổng thanh toán sản phẩm: ' + ${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}+' VND'"></h6>
+
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12 ml-auto">
+                        Phương thức thanh toán : <h5 style="color: rgb(21, 219, 153);"
+                                                     th:text="${billdetail.phuongThucThanhToan}">Trực tiếp</h5>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12 ml-auto">
+                        Loại đơn : <h5 style="color: rgb(21, 219, 153);">
+                        <span th:if="${billdetail.loaiHoaDon == T(com.project.DuAnTotNghiep.entity.enumClass.InvoiceType).OFFLINE}">Tại quầy</span>
+                        <span th:if="${billdetail.loaiHoaDon == T(com.project.DuAnTotNghiep.entity.enumClass.InvoiceType).ONLINE}">Online</span>
+                    </h5>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12 ml-auto">
+                        Trạng thái đơn hàng :
+                        <form th:action="@{'/admin/update-bill-status/' + ${billdetail.maDonHang}}" method="get">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-outline-secondary" name="trangThaiDonHang"
+                                        th:if="${billdetail.trangThaiDonHang == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).KHOI_TAO}" th:value="DANG_XU_LY"><i class="fa fa-check-square-o"></i>&nbsp;Khởi tạo</button>
+                                <button type="submit" class="btn btn-outline-secondary" name="trangThaiDonHang"
+                                        th:if="${billdetail.trangThaiDonHang == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).DANG_XU_LY}" th:value="DANG_GIAO_HANG"><i class="fa fa-check-square-o"></i>&nbsp;Đang xử lý</button>
+                                <button type="submit" class="btn btn-outline-secondary" name="trangThaiDonHang"
+                                        th:if="${billdetail.trangThaiDonHang == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).DANG_GIAO_HANG}" th:value="CHO_XAC_NHAN"><i class="fa fa-check-square-o"></i>&nbsp;Đang giao hàng</button>
+                                <button type="submit" class="btn btn-outline-secondary" name="trangThaiDonHang"
+                                        th:if="${billdetail.trangThaiDonHang == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).CHO_XAC_NHAN}" th:value="HOAN_THANH"><i class="fa fa-check-square-o"></i>&nbsp;Chờ xác nhận</button>
+                                <button type="submit" class="btn btn-outline-secondary" name="trangThaiDonHang"
+                                        th:if="${billdetail.trangThaiDonHang == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).HOAN_THANH}" disabled><i class="fa fa-check-square-o"></i>&nbsp;Hoàn thành</button>
+                            </div>
+                        </form>
+                        <form th:action="@{'/admin/update-bill-status/' + ${billdetail.maDonHang}}" method="get">
+                            <button type="submit" name="trangThaiDonHang" th:value="HUY" class="btn btn-outline-danger"
+                                    th:if="${billdetail.trangThaiDonHang == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).CHO_XAC_NHAN}" th:disabled="${billdetail.trangThaiDonHang == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).HOAN_THANH}"
+                            ><i class="fa fa-times-circle"></i>&nbsp;Hủy</button>
+                        </form>
+                    </div>
+
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 ml-auto">
+                        <span th:text="'Tên khách hàng: '+${billdetail.tenKhachHang}"></span><br>
+                        <span th:text="'Số điện thoại: '+${billdetail.soDienThoai}">Số điện thoại: 098432644</span><br>
+                        <span th:text="'Địa chỉ email: '+${billdetail.email}">Địa chỉ email: NguyenABC@gmail.com</span><br>
+                    </div>
+                    <div class="col-md-6 ml-auto">
+                        <span th:text="'Tổng tiền hàng: '+${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}+' VND'"> 3.000.000 đ</span><br>
+                        <span th:text="'Giảm giá: ' + (${#numbers.formatDecimal(billdetail.tienSauKhuyenMai, 0, 'COMMA', 0, 'POINT')}+' VND')">3.000 đ</span><br>
+                        <h6 style="color: red;" th:text="'Tổng thanh toán: '+${#numbers.formatDecimal(total - billdetail.tienSauKhuyenMai, 0, 'COMMA', 0, 'POINT')}+' VND'">
+                            2.700.000 đ</h6><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a th:href="@{'/admin/export-pdf/'+${billdetail.maDonHang}}">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Export bill pdf</button>
+            </a>
+            <a th:href="@{'/admin/bill-list'}">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

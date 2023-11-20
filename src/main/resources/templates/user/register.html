@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+  <!--===============================================================================================-->
+  <link rel="icon" type="image/png" th:href="@{/images/icons/favicon.png}"/>
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}"/>
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}"/>
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" th:href="@{/fonts/iconic/css/material-design-iconic-font.min.css}"/>
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" th:href="@{/fonts/linearicons-v1.0.0/icon-font.min.css}"/>
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" th:href="@{/vendor/animate/animate.css}"/>
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" th:href="@{/vendor/css-hamburgers/hamburgers.min.css}"/>
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" th:href="@{/vendor/animsition/css/animsition.min.css}"/>
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" th:href="@{/vendor/select2/select2.min.css}"/>
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" th:href="@{/vendor/perfect-scrollbar/perfect-scrollbar.css}"/>
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" th:href="@{/css/util.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+
+
+</head>
+<body>
+
+<div>
+
+  <!-- Title page -->
+  <section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url('images/bg-02.jpg');">
+    <h2 class="ltext-105 cl0 txt-center">
+      Register
+    </h2>
+  </section>
+
+  <!-- Content page -->
+  <section class="bg0 p-t-62 p-b-60">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-4">
+          <div th:if="${Messges}" class="alert alert-success">
+            <p th:text="${Messges}"></p>
+          </div>
+          <form th:object="${Account}"  th:action="@{/register}" method="post" class="m-3 border rounded" style="background-color: #f0f0f0;">
+            <div class="m-3">
+                <div class="form-group">
+                  <label>Họ và tên</label>
+                  <input type="text" th:field="*{name}" class="form-control" placeholder="Họ và tên">
+                </div>
+                <div class="form-group">
+                  <label for="sinhNhat">Sinh nhật</label>
+                  <input type="date" th:field="*{birthDay}" class="form-control" id="sinhNhat" >
+                </div>
+                <div class="form-group">
+                  <label for="soDienThoai">Số điện thoại</label>
+                  <input type="text" th:field="*{phoneNumber}" class="form-control" id="soDienThoai" placeholder="Số điện thoại">
+                </div>
+
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="text" th:field="*{email}" class="form-control" id="email" placeholder="Email">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary m-2">Đăng ký</button>
+          </form>
+        </div>
+    </div>
+    </div>
+  </section>
+  <!-- Back to top -->
+  <div class="btn-back-to-top" id="myBtn">
+		<span class="symbol-btn-back-to-top">
+			<i class="zmdi zmdi-chevron-up"></i>
+		</span>
+  </div>
+</div>
+
+<!--===============================================================================================-->
+<script th:src="@{/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/animsition/js/animsition.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/bootstrap/js/popper.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/select2/select2.min.js}"></script>
+<script>
+  $(".js-select2").each(function () {
+    $(this).select2({
+      minimumResultsForSearch: 20,
+      dropdownParent: $(this).next('.dropDownSelect2')
+    });
+  })
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/MagnificPopup/jquery.magnific-popup.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
+<script>
+  $('.js-pscroll').each(function () {
+    $(this).css('position', 'relative');
+    $(this).css('overflow', 'hidden');
+    var ps = new PerfectScrollbar(this, {
+      wheelSpeed: 1,
+      scrollingThreshold: 1000,
+      wheelPropagation: false,
+    });
+
+    $(window).on('resize', function () {
+      ps.update();
+    });
+  });
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

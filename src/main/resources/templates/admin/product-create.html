@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout.html}">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+<div layout:fragment="content">
+    <h4>Sản phẩm</h4>
+    <form th:object="${product}" th:method="post" th:action="${action}" id="formProduct1">
+        <div class="m-3">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Mã sản phẩm</label>
+                    <input type="text" class="form-control" th:field="*{code}" placeholder="Mã tự động nếu để trống">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="Name">Tên sản phẩm</label>
+                    <input type="text" class="form-control" th:field="*{name}" id="Name" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Nhãn hàng</label>
+                    <select class="form-control" th:field="*{brand}">
+                        <option th:value="${brand.id}" th:each="brand: ${listBrand}"
+                                th:text="${brand.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Thể loại</label>
+                    <select class="form-control" th:field="*{category}">
+                        <option th:value="${category.id}" th:each="category: ${listCategory}"
+                                th:text="${category.name}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Chất liệu</label>
+                    <select class="form-control" th:field="*{material}">
+                        <option th:value="${material.id}" th:each="material: ${listMaterial}"
+                                th:text="${material.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Trạng thái</label>
+                    <select class="form-control" th:field="*{status}">
+                        <option th:value="1" th:text="'Còn bán'" selected></option>
+                        <option th:value="2" th:text="'Ngừng bán'" ></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Giới tính</label>
+                    <select class="form-control" th:field="*{gender}">
+                        <option th:value="1" th:text="'Nam'" selected></option>
+                        <option th:value="2" th:text="'Nữ'" ></option>
+                        <option th:value="3" th:text="'Unisex'" ></option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="exampleFormControlTextarea1">Mô tả</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" th:field="*{describe}" rows="3"></textarea>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary m-1"><i class="fa ti-save" id="next-btn"></i> Tiếp theo</button>
+            <a href="/admin/product-all" class="btn btn-dark m-1"><i class="fa fa-mail-reply (alias)"></i>
+                <span>Cancel</span></a>
+        </div>
+
+    </form>
+    <div th:if="${duplicateCode!=null}" th:text="${duplicateCode}" class="alert alert-danger ml-2 py-2 px-2"></div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js" th:inline="javascript"></script>
+
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            $("#formProduct1").validate({
+                rules: {
+                    name: {
+                        required: true,
+                        minlength: 1,
+                        maxLength: 30,
+                    }
+                },
+                messages: {
+                    name: {
+                        required: "Vui lòng nhâp tên sản phẩm",
+                        minLength: "Nhập tối thiểu 1 ký tự",
+                        maxLength: "Nhập tối đa 30 ký tự"
+                    }
+                },
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

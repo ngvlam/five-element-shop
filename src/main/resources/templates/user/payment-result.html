@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{user/layout-user.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex flex-column w-100" style="background-color: rgb(249, 249, 249);  height: 100vh;">
+        <div class="container mt-4">
+            <div class="d-flex justify-content-center">
+                <div class="page-right">
+                    <h3>KẾT QUẢ THANH TOÁN</h3>
+                    <div class="mt-3">
+                        <table>
+                            <tr>
+                                <th>Mã giao dịch:</th>
+                                <td th:text="${result.txnRef}"></td>
+                            </tr>
+                            <!-- <tr>
+                              <th>Số hóa đơn:</th>
+                              <td>{{orderId}}</td>
+                            </tr> -->
+                            <tr>
+                                <th>Số tiền:</th>
+                                <td th:text="${#numbers.formatDecimal(result.amount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                            </tr>
+
+                            <tr>
+                                <th>BankCode: </th>
+                                <td th:text="${result.bankCode}"></td>
+                            </tr>
+                            <tr>
+                                <th>Ngày giao dịch: </th>
+                                <td th:text="${#temporals.format(#temporals.createDateTime(result.datePay, 'yyyyMMddHHmmss'), 'dd-MM-yyyy HH:mm:ss')}"></td>
+                            </tr>
+                            <tr>
+                                <th>Kết quả: </th>
+                                <td style="color: blue">
+                                    <b th:text="${status}"></b>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" th:inline="javascript"></script>
+    <script th:inline="javascript">
+        var paymentSuccess = /*[[${paymentSuccess}]]*/ '';
+        console.log(paymentSuccess)
+       if(paymentSuccess) {
+            if(sessionStorage.getItem("orderTemp"))
+            var dataSend = JSON.parse(sessionStorage.getItem("orderTemp"))
+            order()
+
+        }
+
+       async function order() {
+           await $.ajax({
+               type: 'POST',
+
+               url: '/api/orderUser',
+               data: JSON.stringify(dataSend),
+               contentType: "application/json; charset=utf-8",
+               success: function (data) {
+                   sessionStorage.removeItem("orderTemp")
+                   swal("Đơn hàng", "Thành toán thành công", "success")
+               },
+               error: function (xhr, status, error) {
+
+                   swal("Error", xhr.responseJSON.message, "error")
+               }
+           })
+       }
+    </script>
+</div>
+
+</body>
+</html>

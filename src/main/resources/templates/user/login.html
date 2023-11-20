@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{user/layout-user.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <!-- Title page -->
+    <section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url('images/bg-02.jpg');">
+        <h2 class="ltext-105 cl0 txt-center">
+            Login
+        </h2>
+    </section>
+
+    <!-- Content page -->
+    <section class="bg0 p-t-62 p-b-60">
+        <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-4">
+<!--                            <div th:if="${error}" class="alert alert-danger">-->
+<!--                                <p th:text="${error}"></p>-->
+<!--                            </div>-->
+                            <form class="mt-5 p-4 border rounded" th:action="@{/login}" method="post" style="background-color: #f0f0f0;">
+                                <h2 class="mb-4">Login</h2>
+                                <div class="form-group">
+                                    <label for="email">Email:</label>
+                                    <input type="text" class="form-control" id="email" name="email" placeholder="Enter email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password:</label>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
+                                </div>
+                                <div class="form-check ml-3">
+                                    <input type="checkbox" name="remember" class="form-check-input" id="remember" checked>
+                                    <label class="form-check-label"  for="remember">Remember password</label>
+                                </div>
+                                <div th:if="${param.error}">
+                                    							<p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]
+
+                                </div>
+                                <button type="submit" class="btn btn-primary">Login</button>
+                                <div class="forgot-password mt-3">
+                                    <a href="#">Quên mật khẩu?</a>
+                                </div>
+                            </form>
+                            <div class="signup-link mt-2">
+                                <p>Bạn chưa có tài khoản? <a href="#">Đăng ký ngay!</a></p>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+    </section>
+    <!-- Back to top -->
+    <div class="btn-back-to-top" id="myBtn">
+		<span class="symbol-btn-back-to-top">
+			<i class="zmdi zmdi-chevron-up"></i>
+		</span>
+    </div>
+</div>
+
+<!--===============================================================================================-->
+<script th:src="@{/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/animsition/js/animsition.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/bootstrap/js/popper.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/select2/select2.min.js}"></script>
+<script>
+    $(".js-select2").each(function () {
+        $(this).select2({
+            minimumResultsForSearch: 20,
+            dropdownParent: $(this).next('.dropDownSelect2')
+        });
+    })
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/MagnificPopup/jquery.magnific-popup.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
+<script>
+    $('.js-pscroll').each(function () {
+        $(this).css('position', 'relative');
+        $(this).css('overflow', 'hidden');
+        var ps = new PerfectScrollbar(this, {
+            wheelSpeed: 1,
+            scrollingThreshold: 1000,
+            wheelPropagation: false,
+        });
+
+        $(window).on('resize', function () {
+            ps.update();
+        });
+    });
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

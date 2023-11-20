@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Giảm giá sản phẩm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+</head>
+<body>
+
+   <div class="bg-light min-vh-100">
+       <div class="container">
+           <div class="section bg-white px-3 py-3 min-vh-100">
+               <h2 class="mt-5">Quản lý giảm giá sản phẩm</h2>
+
+               <nav aria-label="breadcrumb">
+                   <ol class="breadcrumb">
+                       <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+                       <li class="breadcrumb-item active" aria-current="page">Giảm giá sản phẩm</li>
+                   </ol>
+               </nav>
+                <div class="d-flex flex-row-reverse">
+                    <a th:href="@{/admin/product-discount-create}" class="btn btn-success">Tạo giảm giá +</a>
+                </div>
+               <div class="mt-5">
+                   <table id="myTable" class="table table-striped">
+                       <thead>
+                       <tr>
+                           <th>Mã sản phẩm</th>
+                           <th>Tên sản phẩm</th>
+                           <th>Màu</th>
+                           <th>Cỡ</th>
+                           <th>Giá trước khi giảm</th>
+                           <th>Giá sau khi giảm</th>
+                           <th>Thời gian áp dụng</th>
+                           <th>Thời gian kết thúc</th>
+                           <th>Thao tác</th>
+                       </tr>
+                       </thead>
+                       <tbody>
+                       <tr th:each="discount : ${productDiscounts}">
+                           <td>
+                               <span th:text="${discount.productDetail.product.code}"></span>
+                           </td>
+                           <td>
+                               <span th:text="${discount.productDetail.product.name}"></span>
+                           </td>
+                           <td>
+                               <span th:text="${discount.productDetail.color.name}"></span>
+                           </td>
+                           <td>
+                               <span th:text="${discount.productDetail.size.name}"></span>
+                           </td>
+                           <td>
+                               <span th:text="${discount.productDetail.price}"></span>
+                           </td>
+                           <td>
+                               <span th:text="${discount.discountedAmount}"></span>
+                           </td>
+                           <td>
+                               <span th:text="${#dates.format(discount.startDate, 'dd/MM/yyyy')}"></span>
+                           </td>
+                           <td>
+                               <span th:text="${#dates.format(discount.endDate, 'dd/MM/yyyy')}"></span>
+                           </td>
+                           <td>
+                               <span>Đóng Sửa</span>
+                           </td>
+                       </tr>
+
+                       </tbody>
+                   </table>
+               </div>
+           </div>
+       </div>
+   </div>
+
+    <script th:inline="javascript">
+        $(document).ready( function () {
+            $('#myTable').DataTable();
+        } );
+    </script>
+</body>
+</html>

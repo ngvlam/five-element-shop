@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<div layout:fragment="content">
+    <input type="hidden" id="pageValue" th:value="${param.page}"/>
+    <input type="hidden" id="sortValue" th:value="${param.sort}"/>
+    <input type="hidden" id="ngayTaoStartValue" th:value="${param.ngayTaoStart}"/>
+    <input type="hidden" id="ngayTaoEndValue" th:value="${param.ngayTaoEnd}"/>
+    <form th:action="@{/admin/bill-list}" method="GET">
+        <div class="m-3">
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="maDinhDanh">Mã hóa đơn</label>
+                    <input type="text" class="form-control" id="maDinhDanh" name="maDinhDanh" placeholder="Mã hóa đơn" th:value="${maHoaDon}">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="ngayTaoStart">Bắt đầu</label>
+                    <input type="date" class="form-control" id="ngayTaoStart" name="ngayTaoStart" placeholder="Bắt đầu">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="ngayTaoEnd">Kết thúc</label>
+                    <input type="date" class="form-control" id="ngayTaoEnd" name="ngayTaoEnd" placeholder="Kết thúc">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="trangThai">Trạng thái</label>
+                    <select class="form-control" id="trangThai" name="trangThai">
+                        <option value="">Mời chọn</option>
+                        <option value="KHOI_TAO">Khởi tạo</option>
+                        <option value="DANG_XU_LY">Đang xử lý</option>
+                        <option value="DANG_GIAO_HANG">Đang giao hàng</option>
+                        <option value="CHO_XAC_NHAN">Chờ xác nhận</option>
+                        <option value="HOAN_THANH">Hoàn thành</option>
+                        <option value="HUY">Hủy</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="loaiDon">Loại đơn</label>
+                    <select class="form-control" id="loaiDon" name="loaiDon">
+                        <option value="">Mời chọn</option>
+                        <option value="OFFLINE">Tại quầy</option>
+                        <option value="ONLINE">Trực tuyến</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="hoVaTen">Họ và tên</label>
+                    <input type="text" class="form-control" id="hoVaTen" name="hoVaTen" placeholder="Họ và tên">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="soDienThoai">Số điện thoại</label>
+                    <input type="text" class="form-control" id="soDienThoai" name="soDienThoai"
+                           placeholder="Số điện thoaị">
+                </div>
+            </div>
+            <button onsubmit="return submitForm(this)"  type="submit" class="btn btn-primary m-1"><i class="fa fa-search"></i> Search</button>
+            <a href="#" onclick="exportToExcel()">
+                <button type="button" class="btn btn-primary m-1"><i class="fa fa-level-down"></i> Export excel</button>
+            </a>
+        </div>
+    </form>
+
+    <div class="alert alert-success" role="alert" th:if="${message}">
+        <span th:text="${message}"></span>
+    </div>
+    <table class="table table-hover border m-3" style="cursor: pointer" id="billTable">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">Mã hóa đơn<br>
+                <a th:href="@{/admin/bill-list(page=0, sort=${sortField == 'maHoaDon' && sortDirection == 'asc' ? 'maHoaDon,desc' : 'maHoaDon,asc'}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="sort-link">↑</a>
+                <a th:href="@{/admin/bill-list(page=0, sort=${sortField == 'maHoaDon' && sortDirection == 'desc' ? 'maHoaDon,asc' : 'maHoaDon,desc'}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="sort-link">↓</a>
+            </th>
+            <th scope="col">Họ và tên<br>
+                <a th:href="@{/admin/bill-list(page=0, sort=${sortField == 'hoVaTen' && sortDirection == 'asc' ? 'hoVaTen,desc' : 'hoVaTen,asc'}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="sort-link">↑</a>
+                <a th:href="@{/admin/bill-list(page=0, sort=${sortField == 'hoVaTen' && sortDirection == 'desc' ? 'hoVaTen,asc' : 'hoVaTen,desc'}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="sort-link">↓</a>
+            </th>
+            <th scope="col">Số điện thoại<br>
+                <a th:href="@{/admin/bill-list(page=0, sort=${sortField == 'soDienThoai' && sortDirection == 'asc' ? 'soDienThoai,desc' : 'soDienThoai,asc'}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="sort-link">↑</a>
+                <a th:href="@{/admin/bill-list(page=0, sort=${sortField == 'soDienThoai' && sortDirection == 'desc' ? 'soDienThoai,asc' : 'soDienThoai,desc'}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="sort-link">↓</a>
+            </th>
+            <th scope="col">Ngày đặt<br></th>
+            <th scope="col">Tổng tiền<br>
+                <a th:href="@{/admin/bill-list(page=0, sort=${sortField == 'tongTien' && sortDirection == 'asc' ? 'tongTien,desc' : 'tongTien,asc'}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="sort-link">↑</a>
+                <a th:href="@{/admin/bill-list(page=0, sort=${sortField == 'tongTien' && sortDirection == 'desc' ? 'tongTien,asc' : 'tongTien,desc'}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="sort-link">↓</a>
+            </th>
+            <th scope="col">Loại đơn</th>
+            <th scope="col">Hình thức thanh toán</th>
+            <th scope="col">Trạng thái</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item:${items}" class="clickable-row" th:data-maHoaDon="${item.maHoaDon}">
+            <th scope="row" th:text="${item.maDinhDanh}">HD09347</th>
+            <td th:text="${item.hoVaTen}">Mark</td>
+            <td th:text="${item.soDienThoai}">03843234</td>
+            <td th:text="${#temporals.format(item.ngayTao, 'dd-MM-yyyy HH:mm')}">03843234</td>
+            <td th:text="${#numbers.formatDecimal(item.tongTien, 0, 'COMMA', 0, 'POINT')}+' VND'"></td>
+            <td>
+                <span th:if="${item.loaiDon == T(com.project.DuAnTotNghiep.entity.enumClass.InvoiceType).OFFLINE}">Tại quầy</span>
+                <span th:if="${item.loaiDon == T(com.project.DuAnTotNghiep.entity.enumClass.InvoiceType).ONLINE}">Online</span>
+            </td>
+            <td th:text="${item.hinhThucThanhToan}">Tiền mặt</td>
+            <td>
+                <form th:action="@{'/admin/update-bill-status/' + ${item.maHoaDon}}" method="get" id="cancelForm">
+                    <div class="form-group">
+                        <button type="submit" name="trangThaiDonHang" value="DANG_XU_LY" class="btn btn-outline-secondary"
+                                onclick="showCancellationConfirmation()"
+                                th:if="${item.trangThai == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).KHOI_TAO}"><i class="fa fa-check-square-o"></i>&nbsp;Khởi tạo
+                        </button>
+                        <button type="submit" name="trangThaiDonHang" value="DANG_GIAO_HANG" class="btn btn-outline-secondary"
+                                onclick="showCancellationConfirmation()"
+                                th:if="${item.trangThai == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).DANG_XU_LY}"><i class="fa fa-check-square-o"></i>&nbsp;Đang xử lý
+                        </button>
+                        <button type="submit" name="trangThaiDonHang" value="CHO_XAC_NHAN" class="btn btn-outline-secondary"
+                                onclick="showCancellationConfirmation()"
+                                th:if="${item.trangThai == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).DANG_GIAO_HANG}"><i class="fa fa-check-square-o"></i>&nbsp;Đang giao hàng
+                        </button>
+                        <button type="submit" name="trangThaiDonHang" value="HOAN_THANH" class="btn btn-outline-secondary"
+                                onclick="showCancellationConfirmation()"
+                                th:if="${item.trangThai == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).CHO_XAC_NHAN}"><i class="fa fa-check-square-o"></i>&nbsp;Chờ xác nhận
+                        </button>
+                        <button type="submit" name="trangThaiDonHang" value="" class="btn btn-outline-secondary"
+                                onclick="showCancellationConfirmation()"
+                                th:if="${item.trangThai == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).HOAN_THANH}" disabled><i class="fa fa-check-square-o"></i>&nbsp;Hoàn
+                            thành
+                        </button>
+                    </div>
+                </form>
+                <form th:action="@{'/admin/update-bill-status/' + ${item.maHoaDon}}" method="get">
+                    <button type="submit" name="trangThaiDonHang" value="HUY" class="btn btn-outline-danger"
+                            th:if="${item.trangThai != T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).CHO_XAC_NHAN}" th:disabled="${item.trangThai == T(com.project.DuAnTotNghiep.entity.enumClass.BillStatus).HOAN_THANH}"
+                    ><i class="fa fa-times-circle"></i>&nbsp;Hủy
+                    </button>
+                </form>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="clearfix">
+        <ul class="pagination">
+            <li th:if="${items.hasPrevious()}" class="page-item">
+                <a th:href="@{/admin/bill-list(page=0, sort=${sortField}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="page-link">First</a>
+            </li>
+            <li th:if="${items.hasPrevious()}" class="page-item">
+                <a th:href="@{/admin/bill-list(page=${items.number - 1}, sort=${sortField}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="page-link">Previous</a>
+            </li>
+            <li th:if="${items.hasNext()}" class="page-item">
+                <a th:href="@{/admin/bill-list(page=${items.number + 1}, sort=${sortField}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="page-link">Next</a>
+            </li>
+            <li th:if="${items.hasNext()}" class="page-item">
+                <a th:href="@{/admin/bill-list(page=${items.totalPages - 1},sort=${sortField}, maHoaDon=${maHoaDon}, ngayTaoStart=${ngayTaoStart}, ngayTaoEnd=${ngayTaoEnd}, trangThai=${trangThai}, loaiDon=${loaiDon}, hoVaTen=${hoVaTen}, soDienThoai=${soDienThoai})}"
+                   class="page-link">Last</a>
+            </li>
+        </ul>
+    </div>
+    <script th:inline="javascript">
+        var lastClickTime = 0;
+        var doubleClickDelay = 300;
+
+        var clickableRows = document.querySelectorAll(".clickable-row");
+
+        clickableRows.forEach(function(row) {
+            row.addEventListener("click", function(e) {
+                var currentTime = new Date().getTime();
+                if (currentTime - lastClickTime < doubleClickDelay) {
+                    // Đây là double click
+                    var maHoaDon = row.getAttribute("data-maHoaDon");
+                    window.location.href = "/admin/getbill-detail/" + maHoaDon;
+                }
+                lastClickTime = currentTime;
+            });
+        });
+
+        function exportToExcel() {
+            var page = document.getElementById("pageValue").value;
+            var sort = document.getElementById("sortValue").value;
+            var ngayTaoStart = document.getElementById("ngayTaoStart").value;
+            var ngayTaoEnd = document.getElementById("ngayTaoEnd").value;
+
+            swal({
+                title: "Xác nhận ?",
+                text: "Bạn có chắc chắn muôns export excel không ?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        swal("Bạn đã xác nhận thành công!", {
+                            icon: "success",
+                        }).then(() => {
+                            var exportUrl = `/admin/export-bill?page=${page}&sort=${sort}&ngayTaoStart=${ngayTaoStart}&ngayTaoEnd=${ngayTaoEnd}`;
+                            window.location.href = exportUrl;
+                        });
+                    } else {
+                        swal("Bạn đẫ hủy thành công!");
+                    }
+                });
+        }
+
+        const selectElement = document.getElementById("trangThaiHidden");
+        const button2 = document.getElementById("button2");
+        const button3 = document.getElementById("button3");
+        const button4 = document.getElementById("button4");
+        const button5 = document.getElementById("button5");
+        const button6 = document.getElementById("button6");
+
+        selectElement.addEventListener("change", function() {
+            const selectedValue = selectElement.value;
+            button2.disabled = selectedValue !== "1";
+            button3.disabled = selectedValue !== "2";
+            button4.disabled = selectedValue !== "3";
+            button5.disabled = selectedValue !== "4";
+            button6.disabled = selectedValue === "5" || selectedValue === "6";
+        });
+
+
+
+        function showCancellationConfirmation() {
+            swal({
+                title: "Are you sure?",
+                text: "Once canceled, you will not be able to recover this order!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        document.querySelector("form[action*='/admin/update-bill-status/']").submit();
+                    } else {
+                        swal("Your order is safe!");
+                    }
+                });
+        }
+
+    </script>
+</div>
+</body>
+</html>
